@@ -13,6 +13,9 @@ function ThemeProvider({
       defaultTheme="system"
       enableSystem
       disableTransitionOnChange
+      scriptProps={{
+        suppressHydrationWarning: true,
+      }}
       {...props}
     >
       <ThemeHotkey />
@@ -47,9 +50,10 @@ function ThemeHotkey() {
         return
       }
 
-      if (event.key.toLowerCase() !== "d") {
-        return
-      }
+      // Only the dedicated hotkey ("d") toggles the theme.
+      // if (event.key.toLowerCase() !== "d") {
+      //   return
+      // }
 
       if (isTypingTarget(event.target)) {
         return
