@@ -5,11 +5,13 @@ import { FeaturesSection } from "@/components/features-section"
 import { PricingSection } from "@/components/pricing-section"
 import { CtaSection } from "@/components/cta-section"
 import { Footer } from "@/components/footer"
+import { Navbar } from "@/components/navbar"
 
 export default function Page() {
   return (
     <>
       <main>
+        <Navbar/>
         <Hero />
         <StatsSection />
         <JobDiscoverySection />

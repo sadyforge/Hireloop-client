@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -8,12 +9,6 @@ import { Button, buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { authClient, useSession } from "@/lib/auth-client"
 import toast from "react-hot-toast"
-
-const NAV_LINKS = [
-  { href: "/jobs", label: "Browse Jobs" },
-  { href: "/company", label: "Company" },
-  { href: "/pricing", label: "Pricing" },
-] as const
 
 function HireLoopLogo({ className }: React.ComponentProps<"span">) {
   return (
@@ -53,12 +48,29 @@ function HireLoopLogo({ className }: React.ComponentProps<"span">) {
 
 function Navbar() {
   const [open, setOpen] = React.useState(false)
-  const { data: session } = useSession()
+  const { data: session, isPending } = useSession()
   const user = session?.user
-  // console.log(user ,'data')
+
+  const NAV_LINKS = [
+    { href: "/jobs", label: "Browse Jobs" },
+    { href: "/company", label: "Company" },
+    { href: "/pricing", label: "Pricing" },
+    {
+      href: user?.role
+        ? `/dashboard/${user.role}`
+        : "/dashboard/seeker",
+      label: "Dashboard",
+    },
+  ] as const
+
   const handleSignOut = async () => {
-    await authClient.signOut()
-    toast.success("Successfully user Logout")
+    try {
+      await authClient.signOut()
+      setOpen(false)
+      toast.success("Successfully user Logout")
+    } catch {
+      toast.error("Logout failed. Please try again.")
+    }
   }
 
   return (
@@ -79,21 +91,20 @@ function Navbar() {
                 {link.label}
               </Link>
             ))}
-            {/* <span aria-hidden="true" className="h-6 w-px bg-neutral-700/60" /> */}
-            <>
-              {user ? (
+
+            {user ? (
+              <>
+                <div className="text-white">Welcome, {user.name}</div>
+                <Button
+                  onClick={handleSignOut}
+                  className="text-sm font-medium text-indigo-400 transition-colors hover:text-indigo-300"
+                >
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              !isPending && (
                 <>
-                  <div className="text-white">Welcome, {user?.name} </div>
-                  <Button
-                    onClick={handleSignOut}
-                    className="text-sm font-medium text-indigo-400 transition-colors hover:text-indigo-300"
-                  >
-                    Sign Out
-                  </Button>
-                </>
-              ) : (
-                <>
-                  {" "}
                   <Link
                     href="/sign-in"
                     className="text-sm font-medium text-indigo-400 transition-colors hover:text-indigo-300"
@@ -110,8 +121,8 @@ function Navbar() {
                     Get Started
                   </Link>
                 </>
-              )}
-            </>
+              )
+            )}
           </div>
 
           <Button
@@ -138,24 +149,44 @@ function Navbar() {
                 {link.label}
               </Link>
             ))}
+
             <div aria-hidden="true" className="my-2 h-px bg-neutral-800" />
-            <Link
-              href="/sign-in"
-              onClick={() => setOpen(false)}
-              className="rounded-lg px-3 py-2.5 text-sm font-medium text-indigo-400 transition-colors hover:bg-neutral-800/70 hover:text-indigo-300"
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/sign-up"
-              onClick={() => setOpen(false)}
-              className={cn(
-                buttonVariants({ size: "lg" }),
-                "mt-2 w-full justify-center bg-indigo-500 text-white hover:bg-indigo-400"
-              )}
-            >
-              Get Started
-            </Link>
+
+            {user ? (
+              <>
+                <div className="px-3 py-2 text-sm text-white">
+                  Welcome, {user.name}
+                </div>
+                <Button
+                  onClick={handleSignOut}
+                  className="justify-start text-sm font-medium text-indigo-400 transition-colors hover:text-indigo-300"
+                >
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              !isPending && (
+                <>
+                  <Link
+                    href="/sign-in"
+                    onClick={() => setOpen(false)}
+                    className="rounded-lg px-3 py-2.5 text-sm font-medium text-indigo-400 transition-colors hover:bg-neutral-800/70 hover:text-indigo-300"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/sign-up"
+                    onClick={() => setOpen(false)}
+                    className={cn(
+                      buttonVariants({ size: "lg" }),
+                      "mt-2 w-full justify-center bg-indigo-500 text-white hover:bg-indigo-400"
+                    )}
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )
+            )}
           </div>
         )}
       </nav>

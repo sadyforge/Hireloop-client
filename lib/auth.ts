@@ -11,7 +11,7 @@ export type UserRole = "seeker" | "recruiter" | "admin"
 
 const ROLE_VALUES: string[] = ["seeker", "recruiter", "admin"]
 
-function isUserRole(value: unknown): value is UserRole {
+export function isUserRole(value: unknown): value is UserRole {
   return typeof value === "string" && ROLE_VALUES.includes(value)
 }
 

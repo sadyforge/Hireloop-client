@@ -31,23 +31,15 @@ const ROLE_OPTIONS = [
 type AuthSubmit = (data: Record<string, string>) => Promise<void>
 
 type SignUpData = Record<string, string> & { role: UserRole }
-// const router=useRouter()
 
 // Signup function
 async function handleSignUp(data: SignUpData): Promise<boolean> {
- 
-  const { data: response, error } = await authClient.signUp.email({
+  const { error } = await authClient.signUp.email({
     name: data.name,
     email: data.email,
     password: data.password,
     role: data.role,
-    callbackURL: "/",
   })
-
-  console.log("signup response", response, error)
-  if(!error){
-   window.location.href="/"
-  }
 
   if (error) {
     toast.error(error.message || "Something went wrong. Please try again.")
@@ -58,14 +50,18 @@ async function handleSignUp(data: SignUpData): Promise<boolean> {
 }
 
 // Signin function
-async function handleSignIn(data: Record<string, string>) {
-  const { data: response, error } = await authClient.signIn.email({
+async function handleSignIn(data: Record<string, string>): Promise<boolean> {
+  const { error } = await authClient.signIn.email({
     email: data.email,
     password: data.password,
-    callbackURL: "/",
   })
 
-  console.log("signin response", response, error)
+  if (error) {
+    toast.error(error.message || "Something went wrong. Please try again.")
+    return false
+  }
+
+  return true
 }
 
 type AuthFormProps = {
@@ -107,24 +103,26 @@ function AuthForm({ mode, onSubmit }: AuthFormProps) {
     }
 
     if (isSignUp) {
-      const role = ROLE_OPTIONS.find(
+      const selectedRole = ROLE_OPTIONS.find(
         (option) => option.value === data.role
       )?.value
 
-      if (!role) {
+      if (!selectedRole) {
         toast.error("Please choose an account type")
         return
       }
 
-      const created = await handleSignUp({ ...data, role })
+      const created = await handleSignUp({ ...data, role: selectedRole })
       if (created) {
-        toast.success("Successfully User create")
-        router.push("/")
-
+        toast.success("Account created successfully")
+        router.replace("/dashboard")
       }
     } else {
-      await handleSignIn(data)
-      toast.success("Successfully login user")
+      const signedIn = await handleSignIn(data)
+      if (signedIn) {
+        toast.success("Signed in successfully")
+        router.replace("/dashboard")
+      }
     }
   }
 
