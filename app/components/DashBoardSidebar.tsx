@@ -55,7 +55,7 @@ const menuItemByRole: Record<UserRole, MenuItem[]> = {
     { id: 1, name: "Dashboard", url: "/dashboard/seeker", icon: LayoutDashboard },
     { id: 2, name: "Jobs", url: "/dashboard/browse-jobs", icon: BriefcaseBusiness },
     { id: 3, name: "Saved Jobs", url: "/dashboard/saved-jobs", icon: Bookmark },
-    { id: 4, name: "Applications", url: "/dashboard/applications", icon: FileText },
+    { id: 4, name: "Applications", url: "/dashboard/seeker/applications", icon: FileText },
     { id: 5, name: "Billing", url: "/dashboard/billing", icon: CreditCard },
     { id: 6, name: "Settings", url: "/dashboard/settings", icon: Settings },
   ],

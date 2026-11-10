@@ -3,21 +3,7 @@
 import { createJob } from "@/lib/actions/jobs";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import toast from "react-hot-toast";
-
-export type JobFormData = {
-  title: string;
-  company: string;
-  category: string;
-  jobType: string;
-  remote: boolean;
-  location: string;
-  deadline: string;
-  salaryMin: string;
-  salaryMax: string;
-  salaryPeriod: string;
-  responsibilities: string;
-  requirements: string;
-};
+import type { JobFormData } from "@/lib/types/job";
 
 export default function Page() {
   const [form, setForm] = useState<JobFormData>({

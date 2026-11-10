@@ -8,6 +8,12 @@ export const metadata: Metadata = {
     "Create a HireLoop account to apply to curated job opportunities.",
 }
 
-export default function SignUpPage() {
-  return <AuthForm mode="sign-up" />
+type SignUpPageProps = {
+  searchParams: Promise<{ redirectTo?: string }>
+}
+
+export default async function SignUpPage({ searchParams }: SignUpPageProps) {
+  const { redirectTo } = await searchParams
+
+  return <AuthForm mode="sign-up" redirectTo={redirectTo} />
 }

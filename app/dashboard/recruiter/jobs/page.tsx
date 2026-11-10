@@ -1,11 +1,12 @@
 import Link from "next/link"
-import { Plus, MapPin, Pencil, Trash2 } from "lucide-react"
+import { Plus, MapPin, Pencil } from "lucide-react"
 
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { getJobs } from "@/lib/api/jobs"
 import { DeleteJobDialog } from "@/app/components/DeleteJobDialog"
 
+export type JobStatus="active"|"expired"
 export type Job = {
     _id: string
     title: string
@@ -20,6 +21,8 @@ export type Job = {
     salaryPeriod: string
     responsibilities: string
     requirements: string
+    applicants:number
+    status: JobStatus
 }
 
 const formatCompensation = (job: Job) =>

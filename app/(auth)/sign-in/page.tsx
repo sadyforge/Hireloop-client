@@ -8,6 +8,12 @@ export const metadata: Metadata = {
     "Sign in to your HireLoop account to track jobs and applications.",
 }
 
-export default function SignInPage() {
-  return <AuthForm mode="sign-in" />
+type SignInPageProps = {
+  searchParams: Promise<{ redirectTo?: string }>
+}
+
+export default async function SignInPage({ searchParams }: SignInPageProps) {
+  const { redirectTo } = await searchParams
+
+  return <AuthForm mode="sign-in" redirectTo={redirectTo} />
 }

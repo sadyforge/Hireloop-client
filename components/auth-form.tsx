@@ -68,6 +68,8 @@ type AuthFormProps = {
   mode: Mode
   /** Optional custom submit handler; defaults to the better-auth email flow. */
   onSubmit?: AuthSubmit
+  /** Path to send the user to after signing in/up, e.g. back to a job page. */
+  redirectTo?: string
 }
 
 const META: Record<Mode, { title: string; subtitle: string; submit: string }> =
@@ -84,11 +86,23 @@ const META: Record<Mode, { title: string; subtitle: string; submit: string }> =
     },
   }
 
-function AuthForm({ mode, onSubmit }: AuthFormProps) {
+function AuthForm({ mode, onSubmit, redirectTo }: AuthFormProps) {
   const router=useRouter()
   const isSignUp = mode === "sign-up"
   const [showPassword, setShowPassword] = React.useState(false)
   const [role, setRole] = React.useState<UserRole>("seeker")
+
+  // Only follow in-app paths so a tampered ?redirectTo= can't send the
+  // user to an external site. Falls back to the dashboard.
+  const destination =
+    redirectTo && redirectTo.startsWith("/") ? redirectTo : "/dashboard"
+
+  // Keep the redirect when hopping between sign-in and sign-up.
+  const siblingHref = redirectTo
+    ? `${isSignUp ? "/sign-in" : "/sign-up"}?redirectTo=${encodeURIComponent(redirectTo)}`
+    : isSignUp
+      ? "/sign-in"
+      : "/sign-up"
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -115,13 +129,13 @@ function AuthForm({ mode, onSubmit }: AuthFormProps) {
       const created = await handleSignUp({ ...data, role: selectedRole })
       if (created) {
         toast.success("Account created successfully")
-        router.replace("/dashboard")
+        router.replace(destination)
       }
     } else {
       const signedIn = await handleSignIn(data)
       if (signedIn) {
         toast.success("Signed in successfully")
-        router.replace("/dashboard")
+        router.replace(destination)
       }
     }
   }
@@ -287,7 +301,7 @@ function AuthForm({ mode, onSubmit }: AuthFormProps) {
         <p className="mt-6 text-center text-sm text-neutral-400">
           {isSignUp ? "Already have an account?" : "New to HireLoop?"}{" "}
           <Link
-            href={isSignUp ? "/sign-in" : "/sign-up"}
+            href={siblingHref}
             className="font-medium text-indigo-400 transition-colors hover:text-indigo-300"
           >
             {isSignUp ? "Sign in" : "Create an account"}
