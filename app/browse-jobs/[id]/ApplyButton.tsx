@@ -1,14 +1,14 @@
-
 "use client"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 
 import { useSession } from "@/lib/auth-client"
-import { applyJob } from "@/lib/actions/application"
+import { applyJob, getApplicationsCount } from "@/lib/actions/application"
 import toast from "react-hot-toast"
 
 import type { Job } from "@/lib/types/job"
+import { getUserPremiumById } from "@/lib/api/user"
 
 type ApplyButtonProps = {
   job: Job
@@ -37,29 +37,43 @@ const ApplyButton = ({ job }: ApplyButtonProps) => {
       return
     }
 
-    const application = {
-      jobId: job._id,
-
-      // All job information
-      jobDetails: { ...job },
-
-      // Job information for easy access
-      jobTitle: job.title,
-      companyName: job.company,
-
-      // User information
-      userId: user.id,
-      email: user.email,
-      userName: user.name,
-
-      // Application information
-      status: "Applied",
-      appliedAt: new Date().toISOString(),
-    }
-
     setLoading(true)
 
     try {
+      const [countResult, premiumResult] = await Promise.all([
+        getApplicationsCount(`applicantId=${user.id}`),
+        getUserPremiumById(user.id),
+      ])
+
+      // Free plan allows at most 10 applications; premium is unlimited.
+      if ((countResult?.count ?? 0) >= 10 && !premiumResult?.premium) {
+        toast.error(
+          "Free plan limit reached — upgrade to Premium to keep applying"
+        )
+        router.push("/payment")
+        return
+      }
+
+      const application = {
+        jobId: job._id,
+
+        // All job information
+        jobDetails: { ...job },
+
+        // Job information for easy access
+        jobTitle: job.title,
+        companyName: job.company,
+
+        // User information
+        userId: user.id,
+        email: user.email,
+        userName: user.name,
+
+        // Application information
+        status: "Applied",
+        appliedAt: new Date().toISOString(),
+      }
+
       const res = await applyJob(application)
 
       if (res) {

@@ -1,10 +1,11 @@
 import Link from "next/link"
-import { Plus, MapPin, Pencil } from "lucide-react"
+import { Plus, MapPin, Pencil, Users } from "lucide-react"
 
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { getJobs } from "@/lib/api/jobs"
 import { DeleteJobDialog } from "@/app/components/DeleteJobDialog"
+import { getSession } from "@/lib/session"
 
 export type JobStatus="active"|"expired"
 export type Job = {
@@ -49,6 +50,9 @@ const typePillClass =
 const iconButtonClass =
     "flex size-8 items-center justify-center rounded-md border border-white/10 bg-[#1A1A1F] text-white/60 transition-colors"
 
+const applicationsLinkClass =
+    "flex h-8 items-center gap-1.5 whitespace-nowrap rounded-md border border-white/10 bg-[#1A1A1F] px-2.5 text-xs text-white/60 transition-colors hover:border-indigo-500/50 hover:text-indigo-400"
+
 const cellVis = {
     company: "hidden md:table-cell",
     type: "hidden lg:table-cell",
@@ -57,7 +61,8 @@ const cellVis = {
 } satisfies Record<string, string>
 
 export default async function ManageJobsPage() {
-    const jobs: Job[] = await getJobs()
+    const session=await getSession()
+    const jobs: Job[] = await getJobs(`recruiterId=${session?.user.id}`)
 
     return (
         <div className="mx-auto w-full max-w-6xl px-4 py-8">
@@ -101,11 +106,11 @@ export default async function ManageJobsPage() {
 
                         <thead>
                             <tr className="border-b border-white/10">
-                                <th className={cn(headingClass, "px-5", "lg:w-[19%]")}>
+                                <th className={cn(headingClass, "px-5", "lg:w-[17%]")}>
                                     Job Title & Dept
                                 </th>
 
-                                <th className={cn(headingClass, cellVis.company, "lg:w-[16%]")}>
+                                <th className={cn(headingClass, cellVis.company, "lg:w-[15%]")}>
                                     Company & Location
                                 </th>
 
@@ -113,7 +118,7 @@ export default async function ManageJobsPage() {
                                     Job Type
                                 </th>
 
-                                <th className={cn(headingClass, cellVis.salary, "lg:w-[16%]")}>
+                                <th className={cn(headingClass, cellVis.salary, "lg:w-[14%]")}>
                                     Compensation
                                 </th>
 
@@ -121,11 +126,11 @@ export default async function ManageJobsPage() {
                                     Deadline
                                 </th>
 
-                                <th className={cn(headingClass, "lg:w-[12%]")}>
+                                <th className={cn(headingClass, "lg:w-[10%]")}>
                                     Work Mode
                                 </th>
 
-                                <th className={cn(headingClass, "px-5", "lg:w-[14%]")}>
+                                <th className={cn(headingClass, "px-5", "lg:w-[21%]")}>
                                     Actions
                                 </th>
                             </tr>
@@ -212,6 +217,16 @@ export default async function ManageJobsPage() {
                                         {/* Actions */}
                                         <td className={cn(cellClass, "px-5")}>
                                             <div className="flex items-center gap-2">
+                                                <Link
+                                                    href={`/dashboard/recruiter/jobs/${job._id}/application`}
+                                                    className={
+                                                        applicationsLinkClass
+                                                    }
+                                                >
+                                                    <Users className="size-3.5" />
+                                                    View Applications
+                                                </Link>
+
                                                 <button
                                                     type="button"
                                                     aria-label="Edit job"

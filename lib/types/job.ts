@@ -27,6 +27,8 @@ export type Job = {
 export type JobFormData = {
   title: string
   company: string
+  companyId?:string
+  recruiterId:string
   category: string
   jobType: string
   remote: boolean

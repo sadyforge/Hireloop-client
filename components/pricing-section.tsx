@@ -2,63 +2,10 @@
 
 import * as React from "react"
 import Link from "next/link"
-import {
-  ArrowRight,
-  Plus,
-  Rocket,
-  TrendingUp,
-  Zap,
-  type LucideIcon,
-} from "lucide-react"
+import { ArrowRight, Plus } from "lucide-react"
 
+import { PLANS, type Billing } from "@/lib/plans"
 import { cn } from "@/lib/utils"
-
-type Plan = {
-  name: string
-  icon: LucideIcon
-  monthly: number
-  featured?: boolean
-  features: string[]
-}
-
-const PLANS: Plan[] = [
-  {
-    name: "Starter",
-    icon: Rocket,
-    monthly: 0,
-    features: [
-      "Daily AI match brief (top 5)",
-      "Verified salary bands",
-      "Company insight dashboards",
-      "1-click apply, unlimited",
-    ],
-  },
-  {
-    name: "Growth",
-    icon: TrendingUp,
-    monthly: 17,
-    featured: true,
-    features: [
-      "Daily AI match brief (top 10)",
-      "Verified salary bands",
-      "Company insight dashboards",
-      "1-click apply, unlimited",
-    ],
-  },
-  {
-    name: "Premium",
-    icon: Zap,
-    monthly: 99,
-    features: [
-      "Everything in Pro",
-      "Multi-profile career portfolios",
-      "Shared talent rooms",
-      "Recruiter view (read-only)",
-    ],
-  },
-]
-
-type Billing = "monthly" | "yearly"
 
 function PricingSection() {
   const [billing, setBilling] = React.useState<Billing>("monthly")

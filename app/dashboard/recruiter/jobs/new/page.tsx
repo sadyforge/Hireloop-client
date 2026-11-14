@@ -4,11 +4,14 @@ import { createJob } from "@/lib/actions/jobs";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import toast from "react-hot-toast";
 import type { JobFormData } from "@/lib/types/job";
+import { useSession } from "@/lib/auth-client";
 
 export default function Page() {
+  const {data:session}=useSession()
   const [form, setForm] = useState<JobFormData>({
     title: "",
     company: "",
+   recruiterId:session?.user.id ?? "",
     category: "Engineering & Tech",
     jobType: "Full-time",
     remote: false,
@@ -72,6 +75,7 @@ export default function Page() {
         setForm({
           title: "",
           company: "",
+          recruiterId: session?.user.id ?? "",
           category: "Engineering & Tech",
           jobType: "Full-time",
           remote: false,

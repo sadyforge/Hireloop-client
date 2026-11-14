@@ -43,8 +43,13 @@ type MenuItem = {
 
 const menuItemByRole: Record<UserRole, MenuItem[]> = {
   admin: [
-    { id: 1, name: "Dashboard", url: "/dashboard/admin", icon: LayoutDashboard },
-    { id: 2, name: "Users", url: "/dashboard/users", icon: Users },
+    {
+      id: 1,
+      name: "Dashboard",
+      url: "/dashboard/admin",
+      icon: LayoutDashboard,
+    },
+    { id: 2, name: "Users", url: "/dashboard/admin/users", icon: Users },
     { id: 3, name: "Companies", url: "/dashboard/companies", icon: Building2 },
     { id: 4, name: "Jobs", url: "/dashboard/jobs", icon: BriefcaseBusiness },
     { id: 5, name: "Payments", url: "/dashboard/payments", icon: CreditCard },
@@ -52,19 +57,54 @@ const menuItemByRole: Record<UserRole, MenuItem[]> = {
   ],
 
   seeker: [
-    { id: 1, name: "Dashboard", url: "/dashboard/seeker", icon: LayoutDashboard },
-    { id: 2, name: "Jobs", url: "/dashboard/browse-jobs", icon: BriefcaseBusiness },
+    {
+      id: 1,
+      name: "Dashboard",
+      url: "/dashboard/seeker",
+      icon: LayoutDashboard,
+    },
+    {
+      id: 2,
+      name: "Jobs",
+      url: "/dashboard/browse-jobs",
+      icon: BriefcaseBusiness,
+    },
     { id: 3, name: "Saved Jobs", url: "/dashboard/saved-jobs", icon: Bookmark },
-    { id: 4, name: "Applications", url: "/dashboard/seeker/applications", icon: FileText },
+    {
+      id: 4,
+      name: "Applications",
+      url: "/dashboard/seeker/applications",
+      icon: FileText,
+    },
     { id: 5, name: "Billing", url: "/dashboard/billing", icon: CreditCard },
     { id: 6, name: "Settings", url: "/dashboard/settings", icon: Settings },
   ],
 
   recruiter: [
-    { id: 1, name: "Dashboard", url: "/dashboard/recruiter", icon: LayoutDashboard },
-    { id: 2, name: "Manage Jobs", url: "/dashboard/recruiter/jobs", icon: BriefcaseBusiness },
-    { id: 3, name: "Add Job", url: "/dashboard/recruiter/jobs/new", icon: PlusCircleIcon },
-    { id: 4, name: "Applications", url: "/dashboard/applications", icon: ClipboardList },
+    {
+      id: 1,
+      name: "Dashboard",
+      url: "/dashboard/recruiter",
+      icon: LayoutDashboard,
+    },
+    {
+      id: 2,
+      name: "Manage Jobs",
+      url: "/dashboard/recruiter/jobs",
+      icon: BriefcaseBusiness,
+    },
+    {
+      id: 3,
+      name: "Add Job",
+      url: "/dashboard/recruiter/jobs/new",
+      icon: PlusCircleIcon,
+    },
+    {
+      id: 4,
+      name: "Applications",
+      url: "/dashboard/applications",
+      icon: ClipboardList,
+    },
     { id: 5, name: "Settings", url: "/dashboard/settings", icon: Settings },
   ],
 }
@@ -91,15 +131,15 @@ export function DashBoardSidebar() {
       : menuItemByRole.seeker
 
   return (
-    <Sidebar >
+    <Sidebar>
       <SidebarHeader>
         {/* <div className="px-2 py-3 text-2xl font-bold">
           <span className="text-sky-400">hire</span>
           <span className="text-orange-400">loop</span>
         </div> */}
-      </SidebarHeader >
+      </SidebarHeader>
 
-      <SidebarContent >
+      <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
             {!isPending &&
